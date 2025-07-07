@@ -17,13 +17,11 @@ export function useMemories() {
 
   const uploadMemory = async (file: File, title: string, description: string) => {
     if (!auth.currentUser) return { error: 'Not authenticated' };
-
     setUploading(true);
     try {
       const timestamp = Date.now();
       const fileName = `memories/${auth.currentUser.uid}/${timestamp}_${file.name}`;
       const storageRef = ref(storage, fileName);
-
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
@@ -32,9 +30,7 @@ export function useMemories() {
         description,
         imageUrl: downloadURL,
         userId: auth.currentUser.uid,
-        userName: auth.currentUser.displayName || 'User',
-        createdAt: new Date(),
-        fileName
+        createdAt: new Date()
       };
 
       const docRef = await addDoc(collection(db, 'memories'), memoryData);
