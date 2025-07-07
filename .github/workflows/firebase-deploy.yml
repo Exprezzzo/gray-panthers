@@ -1,4 +1,4 @@
-﻿name: Deploy to Firebase Hosting
+name: Deploy to Firebase Hosting
 
 on:
   push:
@@ -20,8 +20,15 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build & Export Project
-        run: npm run build && npm run export
+      - name: Inject Static Export Config
+        run: |
+          echo "export const output = 'export';" > next.config.js
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Export Static Site
+        run: npx next export
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
