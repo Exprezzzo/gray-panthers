@@ -1,14 +1,7 @@
 ﻿import { useState } from 'react';
 import { db, storage, auth } from '@/lib/firebase';
 import {
-  collection,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  getDocs,
-  deleteDoc,
-  doc
+  collection, addDoc, query, where, orderBy, getDocs, deleteDoc, doc
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -19,21 +12,18 @@ export function useMemories() {
     if (!auth.currentUser) return { error: 'Not authenticated' };
     setUploading(true);
     try {
-      const timestamp = Date.now();
-      const fileName = `memories/${auth.currentUser.uid}/${timestamp}_${file.name}`;
-      const storageRef = ref(storage, fileName);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-
-      const memoryData = {
+      const filePath = `memories/${auth.currentUser.uid}/${Date.now()}_${file.name}`;
+      const fileRef = ref(storage, filePath);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      const memory = {
         title,
         description,
-        imageUrl: downloadURL,
+        imageUrl: url,
         userId: auth.currentUser.uid,
         createdAt: new Date()
       };
-
-      const docRef = await addDoc(collection(db, 'memories'), memoryData);
+      const docRef = await addDoc(collection(db, 'memories'), memory);
       setUploading(false);
       return { id: docRef.id, error: null };
     } catch (error: any) {
@@ -45,16 +35,9 @@ export function useMemories() {
   const getMemories = async () => {
     if (!auth.currentUser) return { memories: [], error: 'Not authenticated' };
     try {
-      const q = query(
-        collection(db, 'memories'),
-        where('userId', '==', auth.currentUser.uid),
-        orderBy('createdAt', 'desc')
-      );
+      const q = query(collection(db, 'memories'), where('userId', '==', auth.currentUser.uid), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
-      const memories = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const memories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       return { memories, error: null };
     } catch (error: any) {
       return { memories: [], error: error.message };
