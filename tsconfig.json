@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -19,6 +19,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "pages/**/*", "components/**/*", "lib/**/*", "hooks/**/*", "styles/**/*"],
+  "exclude": ["node_modules", "backend-functions", "*.ts", "firebase_config_ts_template.ts"]
 }

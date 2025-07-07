@@ -1,5 +1,4 @@
-@'
-{
+﻿{
   "hosting": {
     "public": "out",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
@@ -8,17 +7,6 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(jpg|jpeg|gif|png|webp|svg|ico)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000"
-          }
-        ]
-      }
     ]
   },
   "firestore": {
@@ -26,4 +14,3 @@
     "indexes": "firestore.indexes.json"
   }
 }
-'@ | Out-File -Encoding UTF8 firebase.json
